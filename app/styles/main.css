@@ -548,7 +548,7 @@ div.wall-item
         padding: 5px;
     }
 }
-div.wall-item[style]
+div.wall-item.loaded
 {
     visibility: visible;
 }
