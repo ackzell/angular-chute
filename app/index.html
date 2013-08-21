@@ -1,0 +1,118 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700">
+        <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto+Serif:400italic">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
+
+        <!-- build:css({.tmp,app}) styles/main.css -->
+        <link rel="stylesheet" href="styles/main.css">
+        <!-- endbuild -->
+</head>
+  <body ng-app="angularChuteApp" ng-controller="MainCtrl">
+    <!--[if lt IE 7]>
+      <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+    <![endif]-->
+
+    <!--[if lt IE 9]>
+      <script src="bower_components/es5-shim/es5-shim.js"></script>
+      <script src="bower_components/json3/lib/json3.min.js"></script>
+    <![endif]-->
+
+    <!-- Add your site or application content here -->
+    <div class="wall" masonry column-width="320" options="{gutter: 10, stamp: '.description'}">
+      <div class="wall-item description">
+        <section>
+          <span>1. SUBMIT</span>
+          <p>
+            Upload as many as 10 photos of your most memorable travel moments and tell us what made them unforgettable.<br><br>
+            All entries must be received<br>by September 16, 2013.
+          </p>
+          <a class="button" href="#">Upload Your Photos</a>
+          <p><a href="#rules">Official Rules</a></p>
+        </section>
+        <section>
+          <span>2. VOTE</span>
+          <p>
+            Vote for your favorites by clicking<br> the star symbol on any picture.<br>
+            Come back to vote every day—<br>and share your own photos<br>for a better chance to win!
+          </p>
+        </section>
+        <section>
+          <span>3. WIN</span>
+          <p>
+            Come back on September 23 to see<br> if you're one of
+            our 25 finalists<br> and to help select
+            the winner of <br>the <strong>$25,000 grand prize</strong>.
+          </p>
+        </section>
+      </div>
+
+      <div class="masonry-brick wall-item" ng-repeat="asset in assets">
+        <img ng-src="{{asset.url}}/w/300" width="300">
+
+          <div class="like icon-star" ng-class="{'active':asset.hearted()}" ng-click="asset.toggleHeart()"></div>
+  
+          <div class="meta">
+            <span class="username">{{asset._username()}}</span>
+            | 
+            <i class="icon-map-marker"></i>&nbsp;&nbsp;{{asset.loc()}}
+          </div>
+          
+          <p>{{asset.caption}}</p>
+          
+          <span class="likes"><span class="likes-number">{{asset.hearts}}</span> likes</span>
+      </div>
+    </div>
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+    <script>
+      var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+      g.src='//www.google-analytics.com/ga.js';
+      s.parentNode.insertBefore(g,s)}(document,'script'));
+    </script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+
+    <!-- build:js scripts/modules.js -->
+    <script src="bower_components/lodash/lodash.js"></script>
+    <script src="bower_components/jquery-bridget/jquery.bridget.js"></script>
+    <script src="bower_components/get-style-property/get-style-property.js"></script>
+    <script src="bower_components/get-size/get-size.js"></script>
+    <script src="bower_components/eventEmitter/EventEmitter.js"></script>
+    <script src="bower_components/eventie/eventie.js"></script>
+    <script src="bower_components/doc-ready/doc-ready.js"></script>
+    <script src="bower_components/matches-selector/matches-selector.js"></script>
+    <script src="bower_components/outlayer/item.js"></script>
+    <script src="bower_components/outlayer/outlayer.js"></script>
+    <script src="bower_components/masonry/masonry.js"></script>
+    <script src="bower_components/imagesloaded/imagesloaded.js"></script>
+    <script src="bower_components/angular-masonry/angular-masonry.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <!-- endbuild -->
+
+    <script src="chute/chute.js"></script>
+    <script src="chute/api/Heart.js"></script>
+    <script src="chute/api/Asset.js"></script>
+
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/models/DemoAsset.js"></script>
+    <script src="scripts/controllers/main.js"></script>
+    <!-- endbuild -->
+
+</body>
+</html>
