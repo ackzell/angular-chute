@@ -989,11 +989,9 @@ div.thank-you div.uploaded-wall div.uploaded-item div.sharing a i
 div.lightbox
 {
     color: #aaa;
-    display: block;
     font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
-    position: absolute;
-    top: 0;
-    width: 600px;
+    max-width: 600px;
+    cursor: default;
 }
 div.lightbox>div
 {
@@ -1004,7 +1002,7 @@ div.lightbox>div
     padding: 10px 0;
     webkit-box-shadow: 0 1px 4px rgba(0,0,0,0.3);
 }
-div.lightbox>div>div
+div.lightbox>div.border
 {
     border: 1px solid #f0f0f0 \9;
     box-shadow: 0 1px 4px rgba(0,0,0,0.3);
@@ -1012,7 +1010,6 @@ div.lightbox>div>div
     moz-box-shadow: 0 1px 4px rgba(0,0,0,0.3);
     padding: 20px 20px 5px 20px;
     webkit-box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-    z-index: 99;
 }
 div.lightbox div.sidebar
 {
@@ -1024,13 +1021,18 @@ div.lightbox div.sidebar
     width: 250px;
     z-index: -999;
 }
-div.lightbox img.asset
+div.lightbox .mfp-close {
+    right: -12px;
+    top: -30px;
+}
+div.lightbox img.mfp-img
 {
     border: 1px solid #e2e2e2;
     display: block;
     margin: auto;
     max-height: 100%;
     max-width: 100%;
+    padding: 0;
 }
 div.lightbox div.like
 {
@@ -1091,6 +1093,8 @@ div.lightbox p
     font-size: 14px;
     margin: 10px auto 0;
     text-align: center;
+    color: #aaa;
+    padding: 0;
 }
 div.lightbox div.sharing
 {
