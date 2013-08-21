@@ -15,6 +15,8 @@
         <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto+Serif:400italic">
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 
+        <link rel="stylesheet" href="bower_components/magnific-popup/dist/magnific-popup.css">
+
         <!-- build:css({.tmp,app}) styles/main.css -->
         <link rel="stylesheet" href="styles/main.css">
         <!-- endbuild -->
@@ -38,7 +40,7 @@
             Upload as many as 10 photos of your most memorable travel moments and tell us what made them unforgettable.<br><br>
             All entries must be received<br>by September 16, 2013.
           </p>
-          <a class="button" href="#">Upload Your Photos</a>
+          <a class="button open-submission-modal" href="#submission-modal">Upload Your Photos</a>
           <p><a href="#rules">Official Rules</a></p>
         </section>
         <section>
@@ -59,19 +61,98 @@
       </div>
 
       <div class="masonry-brick wall-item" ng-repeat="asset in assets">
-        <img ng-src="{{asset.url}}/w/300" width="300">
+        <a class="magnific-popup" href="{{asset.url}}" title="{{asset.caption}}"><img ng-src="{{asset.url}}/w/300" width="300" border="0"></a>
 
-          <div class="like icon-star" ng-class="{'active':asset.hearted()}" ng-click="asset.toggleHeart()"></div>
-  
-          <div class="meta">
-            <span class="username">{{asset._username()}}</span>
-            | 
-            <i class="icon-map-marker"></i>&nbsp;&nbsp;{{asset.loc()}}
+        <div class="like icon-star" ng-class="{'active':asset.hearted()}" ng-click="asset.toggleHeart()"></div>
+
+        <div class="meta">
+          <span class="username">{{asset._username()}}</span>
+          | 
+          <i class="icon-map-marker"></i>&nbsp;&nbsp;{{asset.loc()}}
+        </div>
+        
+        <p>{{asset.caption}}</p>
+        
+        <span class="likes"><span class="likes-number">{{asset.hearts}}</span> likes</span>
+      </div>
+    </div>
+
+    <div id="submission-modal" class="submission-modal mfp-hide">
+      <div>
+        <div class="fields">
+          <h1>Upload Your Photos</h1>
+          <span class="note">(* required fields)</span>
+        
+          <form method="post" class="clearfix">
+            <div class="row two clearfix">
+              <div class="field">
+                <label for="username">Username *</label>
+                <input type="text" name="username" id="username">
+              </div>
+            
+              <div class="field">
+                <label for="email">Email *</label>
+                <input type="text" name="email" id="email">
+                <span class="note">Will be used in accordance with our <a href="http://www.condenast.com/privacy-policy#privacypolicy" target="_blank">Privacy Policy</a>.</span>
+              </div>
+            </div>
+          
+            <div class="row two clearfix">
+              <div class="field">
+                <label for="first_name">First name *</label>
+                <input type="text" name="first_name" id="first_name">
+              </div>
+            
+              <div class="field">
+                <label for="last_name">Last name *</label>
+                <input type="text" name="last_name" id="last_name">
+              </div>
+            </div>
+          
+            <div class="row clearfix">
+              <div class="field">
+                <label for="location">Location</label>
+                <i class="icon-map-marker"></i><input type="text" name="location" id="location" placeholder="Where the photos were taken">
+              </div>
+            </div>
+
+            <div class="row clearfix">
+              <div class="field">
+                <label>Category</label>
+              </div>
+              <input type="checkbox" name="category" value="adventure" id="category-adventure"><label for="category-adventure">adventure</label>
+              <input type="checkbox" name="category" value="beach" id="category-beach"><label for="category-beach">beach</label>
+              <input type="checkbox" name="category" value="cruise" id="category-cruise"><label for="category-cruise">cruise</label>
+              <input type="checkbox" name="category" value="family" id="category-family"><label for="category-family">family</label>
+              <input type="checkbox" name="category" value="food" id="category-food"><label for="category-food">food</label>
+              <input type="checkbox" name="category" value="historic" id="category-historic"><label for="category-historic">historic</label>
+              <br>
+              <input type="checkbox" name="category" value="hotel" id="category-hotel"><label for="category-hotel">hotel</label>
+              <input type="checkbox" name="category" value="landmark" id="category-landmark"><label for="category-landmark">landmark</label>
+              <input type="checkbox" name="category" value="nature" id="category-nature"><label for="category-nature">nature</label>
+              <input type="checkbox" name="category" value="romantic" id="category-romantic"><label for="category-romantic">romantic</label>
+              <input type="checkbox" name="category" value="safari" id="category-safari"><label for="category-safari">safari</label>
+              <input type="checkbox" name="category" value="sports" id="category-sports"><label for="category-sports">sports</label>
+            </div>
+
+          </form>
+        </div>
+        
+        <div class="agreements">
+          <div class="row clearfix">
+            <input type="checkbox" name="subscribe" value="true" selected id="subscribe"> <label for="subscribe">Subscribe to the Daily Traveler newsletter for the latest travel inspiration, news, and tips from <span>Condé Nast Traveler</span>.</label>
           </div>
-          
-          <p>{{asset.caption}}</p>
-          
-          <span class="likes"><span class="likes-number">{{asset.hearts}}</span> likes</span>
+
+          <div class="row clearfix">
+            <input type="checkbox" name="agree" value="true" id="agree"> <label for="agree">I agree to <a href="#rules" target="_blank">Official Rules</a>. *</label>
+          </div>
+
+          <div class="clearfix note">
+            <span class="note">Problems uploading your photos? Email: <a href="mailto:support@getchute.com">support@getchute.com</a></span>
+          </div>
+        </div>
+
+        <a class="button select-photo submit" href="#">Select photos</a>
       </div>
     </div>
 
@@ -100,6 +181,7 @@
     <script src="bower_components/masonry/masonry.js"></script>
     <script src="bower_components/imagesloaded/imagesloaded.js"></script>
     <script src="bower_components/angular-masonry/angular-masonry.js"></script>
+    <script src="bower_components/magnific-popup/dist/jquery.magnific-popup.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <!-- endbuild -->
