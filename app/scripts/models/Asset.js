@@ -1,4 +1,6 @@
-angular.module('angularChuteApp').factory('DemoAsset', ['Asset', function(Asset) {
+angular.module('angularChuteApp').factory('Asset', ['Chute.API.Asset', function(ChuteAsset) {
+
+  var Asset = angular.extend(ChuteAsset);
 
   Asset.prototype.loc = function() {
     if (! this._location) {

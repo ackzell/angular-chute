@@ -1,4 +1,4 @@
-angular.module('chute').factory('Heart', ['$resource', '$http', 'apiUrl', function($resource, $http, apiUrl) {
+angular.module('chute').factory('Chute.API.Heart', ['$resource', '$http', 'apiUrl', function($resource, $http, apiUrl) {
   var HeartResource = $resource(apiUrl + '/hearts/:collectionRoute:id/:memberRoute', {
     id: '@id',
     collectionRoute: '@collectionRoute',

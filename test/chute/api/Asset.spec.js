@@ -1,4 +1,4 @@
-describe('API: Assets', function() {
+describe('Chute.API.Asset', function() {
 
   var Asset, apiUrl, $httpBackend;
   var get_album_abcqsrlx_assets, get_album_abcqsrlx_assets_vjp3miwob, post_albums_abcqsrlx_assets_vjp3miwob_hearts, delete_hearts_zhtuhmvggbhronuhklmp1377027594;
@@ -6,7 +6,7 @@ describe('API: Assets', function() {
   beforeEach(function() {
     module('chute');
     inject(function($injector) {
-      Asset = $injector.get('Asset');
+      Asset = $injector.get('Chute.API.Asset');
       apiUrl = $injector.get('apiUrl');
       get_albums_abcqsrlx_assets = $injector.get('get_albums_abcqsrlx_assets');
       get_albums_abcqsrlx_assets_vjp3miwob = $injector.get('get_albums_abcqsrlx_assets_vjp3miwob');

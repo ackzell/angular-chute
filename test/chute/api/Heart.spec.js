@@ -1,4 +1,4 @@
-describe('API: Hearts', function() {
+describe('Chute.API.Heart', function() {
 
   var Heart, apiUrl, $httpBackend;
   var delete_hearts_zhtuhmvggbhronuhklmp1377027594;
@@ -6,7 +6,7 @@ describe('API: Hearts', function() {
   beforeEach(function() {
     module('chute');
     inject(function($injector) {
-      Heart = $injector.get('Heart');
+      Heart = $injector.get('Chute.API.Heart');
       apiUrl = $injector.get('apiUrl');
       delete_hearts_zhtuhmvggbhronuhklmp1377027594 = $injector.get('delete_hearts_zhtuhmvggbhronuhklmp1377027594');
       $httpBackend = $injector.get('$httpBackend');
