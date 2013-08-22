@@ -756,7 +756,13 @@ div.submission-modal form a:hover,div.submission-modal .agreements a:hover
 div.submission-modal .agreements
 {
     margin: 20px 100px 0 15px;
-    width: 400px;
+    max-width: 400px;
+}
+@media (max-width: 320px) {
+    div.submission-modal .agreements
+    {
+        margin: 20px 15px 0 15px;
+    }
 }
 div.submission-modal .agreements span.note
 {
