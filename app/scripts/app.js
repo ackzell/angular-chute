@@ -1,13 +1,12 @@
 'use strict';
 
-angular.module('angularChuteApp', ['chute', 'wu.masonry'])
-  .config(function ($routeProvider) {
+angular.module('CapitalOne', ['chute', 'wu.masonry'])
+  .config(['$routeProvider', function($routeProvider) {
     $routeProvider
-      .when('/', {
-        templateUrl: 'views/main.html',
+      .when('popular', {
         controller: 'MainCtrl'
       })
       .otherwise({
-        redirectTo: '/'
+        redirectTo: 'popular'
       });
-  });
+  }]);

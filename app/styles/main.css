@@ -102,7 +102,7 @@ div.hub hr
 }
 div.hub i.icon-chute
 {
-    background-image: url("images/chute-logo.png");
+    background-image: url("../images/chute-logo.png");
     display: inline-block;
     height: 23px;
     position: relative;
@@ -298,7 +298,7 @@ div.panel div.filters input
 }
 div.panel div.filters select
 {
-    background: #fff url("images/select-arrow-small.png") no-repeat 133px 12px;
+    background: #fff url("../images/select-arrow-small.png") no-repeat 133px 12px;
     border-radius: 0px;
     color: #aaa;
     moz-border-radius: 0px;
@@ -503,7 +503,7 @@ div.wall a.load-more:active
 }
 div.wall div.loading
 {
-    background-image: url("images/loading.gif");
+    background-image: url("../images/loading.gif");
     bottom: 0;
     height: 24px;
     left: 50%;
@@ -860,7 +860,7 @@ div.submission-modal div.field input[name="location"]
 }
 div.submission-modal div.field select
 {
-    background: url("images/select-arrow.png") no-repeat right;
+    background: url("../images/select-arrow.png") no-repeat right;
     border: 1px solid #bdc3c7;
     border-radius: 0;
     outline: none;

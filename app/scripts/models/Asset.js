@@ -1,4 +1,6 @@
-angular.module('angularChuteApp').factory('Asset', ['Chute.API.Asset', function(ChuteAsset) {
+'use strict';
+
+angular.module('CapitalOne').factory('Asset', ['Chute.API.Asset', function(ChuteAsset) {
 
   var Asset = angular.extend(ChuteAsset);
 

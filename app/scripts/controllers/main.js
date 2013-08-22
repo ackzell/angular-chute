@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('angularChuteApp')
+angular.module('CapitalOne')
   .controller('MainCtrl', ['$scope', 'Asset', function($scope, Asset) {
 
     $('.open-submission-modal').magnificPopup({
