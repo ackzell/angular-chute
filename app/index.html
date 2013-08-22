@@ -135,20 +135,28 @@
               </section>
             </div>
 
-            <div class="masonry-brick wall-item" ng-repeat="asset in assets">
-              <a class="popup" href="{{asset.url}}" title="{{asset.caption}}"><img ng-src="{{asset.url}}/w/300" width="300" border="0"></a>
+    
+            <div ng-repeat="asset in assets">
+              <div class="masonry-brick wall-item">
+                <a class="popup" href="{{asset.url}}" title="{{asset.caption}}"><img ng-src="{{asset.url}}/w/300" width="300" border="0"></a>
 
-              <div class="like icon-star" ng-class="{'active':asset.hearted()}" ng-click="asset.toggleHeart()"></div>
+                <div class="like icon-star" ng-class="{'active':asset.hearted()}" ng-click="asset.toggleHeart()"></div>
 
-              <div class="meta">
-                <span class="username">{{asset._username()}}</span>
-                | 
-                <i class="icon-map-marker"></i>&nbsp;&nbsp;{{asset.loc()}}
+                <div class="meta">
+                  <span class="username">{{asset._username()}}</span>
+                  | 
+                  <i class="icon-map-marker"></i>&nbsp;&nbsp;{{asset.loc()}}
+                </div>
+                
+                <p>{{asset.caption}}</p>
+                
+                <span class="likes"><span class="likes-number">{{asset.hearts}}</span> likes</span>
               </div>
-              
-              <p>{{asset.caption}}</p>
-              
-              <span class="likes"><span class="likes-number">{{asset.hearts}}</span> likes</span>
+
+              <div class="masonry-brick wall-item displayAd 300x600" ng-if="$index % 5 === 0">
+                <!-- CN_Traveler/dreamtrip -->
+                <iframe ng-src="http://ad.doubleclick.net/N3379/adi/cntraveler.dart/dreamtrip;sz=300x600;tile=3;ord={{window.ord}}?" width="300" height="600" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameBorder="0" scrolling="no" class="ad-banner ad600"></iframe>
+              </div>
             </div>
           </div>
         </div>
@@ -243,7 +251,7 @@
     </script>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
 
     <!-- build:js scripts/modules.js -->
     <script src="bower_components/lodash/lodash.js"></script>
@@ -260,7 +268,7 @@
     <script src="bower_components/imagesloaded/imagesloaded.js"></script>
     <script src="bower_components/angular-masonry/angular-masonry.js"></script>
     <script src="bower_components/magnific-popup/dist/jquery.magnific-popup.js"></script>
-    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-resource-unstable/angular-resource.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <!-- endbuild -->
 
