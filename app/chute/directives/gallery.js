@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('chute').directive('chuteGallery', [function() {
   return {   
     restrict: 'AC',

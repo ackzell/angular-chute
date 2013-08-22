@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('chute').directive('magnificPopup', ['$compile', function($compile) {
   return {   
     restrict: 'AC',    

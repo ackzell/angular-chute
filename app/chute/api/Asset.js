@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('chute').factory('Chute.API.Asset', ['$resource', '$http', 'apiUrl', 'Chute.API.Heart', function($resource, $http, apiUrl, Heart) {
   var AssetResource = $resource(apiUrl + '/albums/:album/assets/:collectionRoute:id/:memberRoute', {
     album: '@album',
