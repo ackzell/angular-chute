@@ -6,8 +6,11 @@ angular.module('chute').factory('Chute.API.Asset', ['$resource', '$http', 'apiUr
     memberRoute: '@memberRoute'
   }, {
     // custom resource methods
+
+    query: {method: 'GET', isArray: false}
   });
 
+  AssetResource._query = AssetResource.query;
   /**
   * Fetch album assets. Overwrites default 'Resource.query' method, maintaining the same API.
   *
@@ -19,12 +22,14 @@ angular.module('chute').factory('Chute.API.Asset', ['$resource', '$http', 'apiUr
   * @async
   */
   AssetResource.query = function(params, success, error) {
-    success = (success || angular.noop);
-    error   = (error   || angular.noop);
+    if (params.perPage) {
+      params.per_page = params.perPage;
+      delete params.perPage;
+    }
 
     var assets = [];
 
-    $http.get(apiUrl + '/albums/' + params.album + '/assets').success(function(response) {
+    AssetResource._query(params, function(response) {
       if (response && response.data) {
         assets.length = 0;
         angular.forEach(response.data, function(data) {
@@ -32,12 +37,13 @@ angular.module('chute').factory('Chute.API.Asset', ['$resource', '$http', 'apiUr
           assets.push(new AssetResource(data));
         });
       }
-      success(response.data, response.headers);
-    }).error(error);
+      (success||angular.noop)(response.data, response.headers);
+    }, error);
 
     return assets;
   };
 
+  AssetResource._get = AssetResource.get;
   /**
   * Fetch album asset. Overwrites default 'Resource.get' method, maintaining the same API.
   *

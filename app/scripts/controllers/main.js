@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('angularChuteApp')
-  .controller('MainCtrl', ['$scope', '$timeout', 'Asset', function($scope, $timeout, Asset) {
+  .controller('MainCtrl', ['$scope', 'Asset', function($scope, Asset) {
 
     $('.open-submission-modal').magnificPopup({
       type:'inline',

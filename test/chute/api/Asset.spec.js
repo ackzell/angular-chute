@@ -38,6 +38,13 @@ describe('Chute.API.Asset', function() {
       expect(response[0].album).toEqual('abcqsrlx');
     });
 
+    it('should have perPage param', function() {
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets?per_page=5').respond(200, get_albums_abcqsrlx_assets);
+      response = Asset.query({album: 'abcqsrlx', perPage: 5});
+      $httpBackend.flush();
+      expect(response[0].album).toEqual('abcqsrlx');
+    });
+
   });
 
   describe('.get', function() {
