@@ -1,6 +1,15 @@
 {
   "name": "angular-chute",
   "version": "0.0.1",
+  "description": "Chute Displays library for AngularJS",
+  "author": {
+    "name": "Chute Corporation",
+    "email": "hello@getchute.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:chute/angular-chute.git"
+  },
   "dependencies": {
   },
   "devDependencies": {
