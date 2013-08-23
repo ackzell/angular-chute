@@ -12,9 +12,70 @@ angular.module('chute').factory('Chute.API.Asset', ['$resource', '$http', 'apiUr
     query: {method: 'GET', isArray: false}
   });
 
+
+  var Assets = {
+    /**
+    * Fetch previous page of assets.
+    * When the assets are sorted naturally (`sort` param is 'id', 'time' or none), continuous paging is used. Otherwise uses standard paging (using `page` param).
+    */
+    prevPage: function(success, error) {
+      this.params.page--;
+
+      var params = angular.copy(this.params);
+
+      if (!this.params.sort || this.params.sort === 'id' || this.params.sort === 'time') {
+        params.since_id = this[0].chute_asset_id;
+        delete params.page;  // don't send the page param
+      } else if (this.params.page <= 0) {
+        throw new RangeError("Cannot fetch previous page with index " + this.params.page + ".");
+      }
+      
+      var assets = this;
+      AssetResource._query(params, function(response) {
+        if (response && response.data) {
+          angular.forEach(response.data, function(data) {
+            data.album = params.album;
+            assets.unshift(new AssetResource(data));
+          });
+        }
+        (success||angular.noop)(response.data, response.headers);
+      }, error);
+    },
+
+    /**
+    * Fetch next page of assets.
+    * When the assets are sorted naturally (`sort` param is 'id', 'time' or none), continuous paging is used. Otherwise uses standard paging (using `page` param).
+    */
+    nextPage: function(success, error) {
+      this.params.page++;
+
+      var params = angular.copy(this.params);
+
+      if (!this.params.sort || this.params.sort === 'id' || this.params.sort === 'time') {
+        params.max_id = this[this.length-1].chute_asset_id;
+        delete params.page;  // don't send the page param
+      }
+
+      var assets = this;
+      AssetResource._query(params, function(response) {
+        if (response && response.data) {
+          angular.forEach(response.data, function(data) {
+            data.album = params.album;
+            assets.push(new AssetResource(data));
+          });
+        }
+        (success||angular.noop)(response.data, response.headers);
+      }, error);
+    }
+  };
+
   AssetResource._query = AssetResource.query;
   /**
   * Fetch album assets. Overwrites default 'Resource.query' method, maintaining the same API.
+  *
+  * The returned array has additional functions:
+  *  - nextPage() - fetch next page using same params as for query
+  *  - prevPage() - fetch previous page using same params as for query
   *
   * See http://docs.angularjs.org/api/ngResource.$resource for documentation.
   *
@@ -29,7 +90,9 @@ angular.module('chute').factory('Chute.API.Asset', ['$resource', '$http', 'apiUr
       delete params.perPage;
     }
 
-    var assets = [];
+    var saveParams = angular.extend({page: 1}, params);
+    // this is a nice trick to get array with helper functions
+    var assets = angular.extend([], {params: saveParams}, Assets);
 
     AssetResource._query(params, function(response) {
       if (response && response.data) {

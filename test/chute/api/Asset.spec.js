@@ -1,6 +1,6 @@
 describe('Chute.API.Asset', function() {
 
-  var Asset, apiUrl, $httpBackend;
+  var Asset, apiUrl, $httpBackend, _;
   var get_album_abcqsrlx_assets, get_album_abcqsrlx_assets_vjp3miwob, post_albums_abcqsrlx_assets_vjp3miwob_hearts, delete_hearts_zhtuhmvggbhronuhklmp1377027594;
 
   beforeEach(function() {
@@ -8,6 +8,7 @@ describe('Chute.API.Asset', function() {
     inject(function($injector) {
       Asset = $injector.get('Chute.API.Asset');
       apiUrl = $injector.get('apiUrl');
+      _ = $injector.get('_');
       get_albums_abcqsrlx_assets = $injector.get('get_albums_abcqsrlx_assets');
       get_albums_abcqsrlx_assets_vjp3miwob = $injector.get('get_albums_abcqsrlx_assets_vjp3miwob');
       post_albums_abcqsrlx_assets_vjp3miwob_hearts = $injector.get('post_albums_abcqsrlx_assets_vjp3miwob_hearts');
@@ -21,31 +22,118 @@ describe('Chute.API.Asset', function() {
     $httpBackend.verifyNoOutstandingRequest()
   });
 
+
   describe('.query', function() {
 
-    it('should fetch album assets', function() {
-      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets').respond(200, get_albums_abcqsrlx_assets);
-      response = Asset.query({album: 'abcqsrlx'});
-      $httpBackend.flush();
-      expect(response.length).toEqual(5);
-      expect(response[0].id).toEqual(462691751);
-    });
+    describe('fetch albums assets', function() {
+      var assets;
+      beforeEach(function() {
+        $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets').respond(200, get_albums_abcqsrlx_assets);
+        assets = Asset.query({album: 'abcqsrlx'});
+        $httpBackend.flush();
+      });
 
-    it('assets should have assigned album', function() {
-      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets').respond(200, get_albums_abcqsrlx_assets);
-      response = Asset.query({album: 'abcqsrlx'});
-      $httpBackend.flush();
-      expect(response[0].album).toEqual('abcqsrlx');
+      it('should fetch album assets', function() {
+        expect(assets.length).toEqual(5);
+        expect(assets[0].id).toEqual(462691751);
+      });
+
+      it('assets should have assigned album', function() {
+        expect(assets[0].album).toEqual('abcqsrlx');
+      });
+
+      it('result should remember query params', function() {
+        expect(assets.params.album).toBe('abcqsrlx');
+      });
+
+      it('result should have page set to 1', function() {
+        expect(assets.params.page).toEqual(1);
+      });
+
+      it('result should have prevPage function', function() {
+        expect(assets.prevPage).toBeDefined();
+      });
+
+      it('result should have nextPage function', function() {
+        expect(assets.nextPage).toBeDefined();
+      });
     });
 
     it('should have perPage param', function() {
       $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets?per_page=5').respond(200, get_albums_abcqsrlx_assets);
-      response = Asset.query({album: 'abcqsrlx', perPage: 5});
+      var assets = Asset.query({album: 'abcqsrlx', perPage: 5});
       $httpBackend.flush();
-      expect(response[0].album).toEqual('abcqsrlx');
+      expect(assets[0].album).toEqual('abcqsrlx');
+    });
+
+    it('should use sort param', function() {
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets?sort=hot').respond(200, get_albums_abcqsrlx_assets);
+      var assets = Asset.query({album: 'abcqsrlx', sort: 'hot'});
+      $httpBackend.flush();
+      expect(assets.params.sort).toEqual('hot');
     });
 
   });
+
+
+  describe('Assets.prevPage', function() {
+    it('should fetch previous page using first id', function() {
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets').respond(200, get_albums_abcqsrlx_assets);
+      var assets = Asset.query({album: 'abcqsrlx'});
+      $httpBackend.flush();
+
+      var firstItem = assets[0];
+
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets?since_id=736347220').respond(200, get_albums_abcqsrlx_assets);
+      assets.prevPage();
+      $httpBackend.flush();
+      expect(assets.length).toBe(10);
+      expect(assets[5]).toBe(firstItem);  // verify assets shifted
+    });
+
+    it('should not fetch page 0', function() {
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets?sort=hot').respond(200, get_albums_abcqsrlx_assets);
+      var assets = Asset.query({album: 'abcqsrlx', sort: 'hot'});
+      $httpBackend.flush();
+
+      expect(assets.params.page).toBe(1);
+      expect(assets.params.sort).toBe('hot');
+      expect(assets.params.album).toBe('abcqsrlx');
+      expect(_.bind(assets.prevPage, assets)).toThrow(new RangeError("Cannot fetch previous page with index 0."));
+    });
+  });
+
+
+  describe('Assets.nextPage', function() {
+    it('should fetch next page using last id', function() {
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets').respond(200, get_albums_abcqsrlx_assets);
+      var assets = Asset.query({album: 'abcqsrlx'});
+      $httpBackend.flush();
+
+      var lastItem = assets[4];
+
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets?max_id=736326673').respond(200, get_albums_abcqsrlx_assets);
+      assets.nextPage();
+      $httpBackend.flush();
+      expect(assets.length).toBe(10);
+      expect(assets[4]).toBe(lastItem);  // verify new assets were appended
+    });
+
+    it('should fetch next page using page param', function() {
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets?sort=hot').respond(200, get_albums_abcqsrlx_assets);
+      var assets = Asset.query({album: 'abcqsrlx', sort: 'hot'});
+      $httpBackend.flush();
+
+      var lastItem = assets[4];
+
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets?page=2&sort=hot').respond(200, get_albums_abcqsrlx_assets);
+      assets.nextPage();
+      $httpBackend.flush();
+      expect(assets.length).toBe(10);
+      expect(assets[4]).toBe(lastItem);  // verify new assets were appended
+    });
+  });
+
 
   describe('.get', function() {
 
@@ -57,6 +145,7 @@ describe('Chute.API.Asset', function() {
     });
 
   });
+
 
   describe('.heart', function() {
 
@@ -79,6 +168,7 @@ describe('Chute.API.Asset', function() {
 
   });
 
+
   describe('.unheart', function() {
 
     it('should unheart an asset', function() {
@@ -100,6 +190,7 @@ describe('Chute.API.Asset', function() {
 
   });
 
+
   describe('.hearted', function() {
 
     it('should be hearted', function() {
@@ -119,6 +210,7 @@ describe('Chute.API.Asset', function() {
     });
 
   });
+
 
   describe('.toggleHeart', function() {
 
