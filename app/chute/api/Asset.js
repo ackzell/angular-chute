@@ -15,8 +15,12 @@ angular.module('chute').factory('Chute.API.Asset', ['$resource', '$http', 'apiUr
 
   var Assets = {
     /**
-    * Fetch previous page of assets.
+    * Fetch previous page of assets and prepend them to current instance of assets.
     * When the assets are sorted naturally (`sort` param is 'id', 'time' or none), continuous paging is used. Otherwise uses standard paging (using `page` param).
+    * @params {Function} success - will be passed these arguments:
+    *   - {Array} newly fetched assets - detached subset of the new assets (in case you need them)
+    *   - {object} response headers
+    * @params {Function} error
     */
     prevPage: function(success, error) {
       this.params.page--;
@@ -32,19 +36,27 @@ angular.module('chute').factory('Chute.API.Asset', ['$resource', '$http', 'apiUr
       
       var assets = this;
       AssetResource._query(params, function(response) {
+        var newAssets = angular.extend([], {params: angular.copy(assets.params)}, Assets);
         if (response && response.data) {
           angular.forEach(response.data, function(data) {
             data.album = params.album;
-            assets.unshift(new AssetResource(data));
+            var asset = new AssetResource(data);
+            newAssets.push(asset);
           });
+          // prepend new assets to the original array
+          assets.unshift.apply(assets, newAssets);
         }
-        (success||angular.noop)(response.data, response.headers);
+        (success||angular.noop)(newAssets, response.headers);
       }, error);
     },
 
     /**
-    * Fetch next page of assets.
+    * Fetch next page of assets and append them to current instance of assets.
     * When the assets are sorted naturally (`sort` param is 'id', 'time' or none), continuous paging is used. Otherwise uses standard paging (using `page` param).
+    * @params {Function} success - will be passed these arguments:
+    *   - {Array} newly fetched assets - detached subset of the new assets (in case you need them)
+    *   - {object} response headers
+    * @params {Function} error
     */
     nextPage: function(success, error) {
       this.params.page++;
@@ -58,13 +70,17 @@ angular.module('chute').factory('Chute.API.Asset', ['$resource', '$http', 'apiUr
 
       var assets = this;
       AssetResource._query(params, function(response) {
+        var newAssets = angular.extend([], {params: angular.copy(assets.params)}, Assets);
         if (response && response.data) {
           angular.forEach(response.data, function(data) {
             data.album = params.album;
-            assets.push(new AssetResource(data));
+            var asset = new AssetResource(data);
+            newAssets.push(asset);
           });
+          // append new asssets to the original array
+          assets.push.apply(assets, newAssets);
         }
-        (success||angular.noop)(response.data, response.headers);
+        (success||angular.noop)(newAssets, response.headers);
       }, error);
     }
   };
@@ -102,7 +118,7 @@ angular.module('chute').factory('Chute.API.Asset', ['$resource', '$http', 'apiUr
           assets.push(new AssetResource(data));
         });
       }
-      (success||angular.noop)(response.data, response.headers);
+      (success||angular.noop)(assets, response.headers);
     }, error);
 
     return assets;

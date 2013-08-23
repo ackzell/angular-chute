@@ -73,6 +73,18 @@ describe('Chute.API.Asset', function() {
       expect(assets.params.sort).toEqual('hot');
     });
 
+    it('should return enhanced Assets in callback', function() {
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets').respond(200, get_albums_abcqsrlx_assets);
+      var success = jasmine.createSpy();
+      var assets = Asset.query({album: 'abcqsrlx'}, success);
+      $httpBackend.flush();
+      expect(success).toHaveBeenCalled();
+      var assetsInCallback = success.mostRecentCall.args[0];
+      expect(assetsInCallback.nextPage).toBeDefined();
+      expect(assetsInCallback[0] instanceof Asset).toBeTruthy();
+      expect(assetsInCallback.length).toBe(5);
+    });
+
   });
 
 
@@ -100,6 +112,23 @@ describe('Chute.API.Asset', function() {
       expect(assets.params.sort).toBe('hot');
       expect(assets.params.album).toBe('abcqsrlx');
       expect(_.bind(assets.prevPage, assets)).toThrow(new RangeError("Cannot fetch previous page with index 0."));
+    });
+
+    it('should return newly added Assets in callback', function() {
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets').respond(200, get_albums_abcqsrlx_assets);
+      var assets = Asset.query({album: 'abcqsrlx'});
+      $httpBackend.flush();
+
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets?since_id=736347220').respond(200, get_albums_abcqsrlx_assets);
+      var success = jasmine.createSpy();
+      assets.prevPage(success);
+      $httpBackend.flush();
+      var newAssets = success.mostRecentCall.args[0];
+      expect(newAssets[0] instanceof Asset).toBeTruthy();
+      expect(newAssets.length).toBe(5);
+      expect(newAssets.prevPage).toBeDefined();
+      expect(newAssets[0]).toBe(assets[0]);
+      expect(newAssets[3]).toBe(assets[3]);
     });
   });
 
@@ -131,6 +160,22 @@ describe('Chute.API.Asset', function() {
       $httpBackend.flush();
       expect(assets.length).toBe(10);
       expect(assets[4]).toBe(lastItem);  // verify new assets were appended
+    });
+
+    it('should return newly added Assets in callback', function() {
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets').respond(200, get_albums_abcqsrlx_assets);
+      var assets = Asset.query({album: 'abcqsrlx'});
+      $httpBackend.flush();
+
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets?max_id=736326673').respond(200, get_albums_abcqsrlx_assets);
+      var success = jasmine.createSpy();
+      assets.nextPage(success);
+      $httpBackend.flush();
+      var newAssets = success.mostRecentCall.args[0];
+      expect(newAssets[0] instanceof Asset).toBeTruthy();
+      expect(newAssets.length).toBe(5);
+      expect(newAssets.nextPage).toBeDefined();
+      expect(newAssets[0]).toBe(assets[5]);
     });
   });
 
