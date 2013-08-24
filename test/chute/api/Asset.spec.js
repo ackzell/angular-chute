@@ -1,6 +1,6 @@
 describe('Chute.API.Asset', function() {
 
-  var Asset, apiUrl, $httpBackend, _;
+  var Asset, apiUrl, $httpBackend;
   var get_album_abcqsrlx_assets, get_album_abcqsrlx_assets_vjp3miwob, post_albums_abcqsrlx_assets_vjp3miwob_hearts, delete_hearts_zhtuhmvggbhronuhklmp1377027594;
 
   beforeEach(function() {
@@ -8,7 +8,6 @@ describe('Chute.API.Asset', function() {
     inject(function($injector) {
       Asset = $injector.get('Chute.API.Asset');
       apiUrl = $injector.get('apiUrl');
-      _ = $injector.get('_');
       get_albums_abcqsrlx_assets = $injector.get('get_albums_abcqsrlx_assets');
       get_albums_abcqsrlx_assets_vjp3miwob = $injector.get('get_albums_abcqsrlx_assets_vjp3miwob');
       post_albums_abcqsrlx_assets_vjp3miwob_hearts = $injector.get('post_albums_abcqsrlx_assets_vjp3miwob_hearts');
@@ -111,7 +110,7 @@ describe('Chute.API.Asset', function() {
       expect(assets.params.page).toBe(1);
       expect(assets.params.sort).toBe('hot');
       expect(assets.params.album).toBe('abcqsrlx');
-      expect(_.bind(assets.prevPage, assets)).toThrow(new RangeError("Cannot fetch previous page with index 0."));
+      expect(angular.bind(assets, assets.prevPage)).toThrow(new RangeError("Cannot fetch previous page with index 0."));
     });
 
     it('should return newly added Assets in callback', function() {

@@ -1,14 +1,11 @@
 'use strict';
 
-angular.module('chute').directive('chuteGallery', ['config', '$', function(config, $) {
-  config = config || {};
-
+angular.module('chute').directive('chuteGallery', function() {
   return {   
-    restrict: 'AC',
+    restrict: 'A',
     controller: ['$scope', '$attrs', 'Chute.API.Asset', function($scope, $attrs, Asset) {
-      var options = $.extend(true, {}, config, $scope.$eval($attrs.chuteGallery));
-
-      $scope.assets = Asset.query({album: options.album, perPage: options.perPage});
+      var options = $scope.$eval($attrs.chuteGallery);
+      $scope.assets = Asset.query(options);
     }]
   };  
-}]);
+});
