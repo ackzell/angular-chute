@@ -7,7 +7,6 @@
     "es5-shim": "~2.0.8",
     "angular-sanitize": "~1.0.7",
     "angular-resource-unstable": "~1.1.5",
-    "angular-masonry": "~0.3.4",
     "magnific-popup": "~0.9.5"
   },
   "devDependencies": {
