@@ -176,6 +176,59 @@ describe('Chute.API.Asset', function() {
       expect(newAssets.nextPage).toBeDefined();
       expect(newAssets[0]).toBe(assets[5]);
     });
+
+    it('should leave more assets after full next page set to true', function() {
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets').respond(200, get_albums_abcqsrlx_assets);
+      var assets = Asset.query({album: 'abcqsrlx'});
+      $httpBackend.flush();
+
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets?max_id=736326673').respond(200, get_albums_abcqsrlx_assets);
+      assets.nextPage();
+      $httpBackend.flush();
+      expect(assets.hasMore()).toBeTruthy();
+    });
+
+    it('should set more assets after empty next page to false', function() {
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets').respond(200, get_albums_abcqsrlx_assets);
+      var assets = Asset.query({album: 'abcqsrlx'});
+      $httpBackend.flush();
+
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets?max_id=736326673').respond(200, {});
+      assets.nextPage();
+      $httpBackend.flush();
+      expect(assets.hasMore()).toBeFalsy();
+    });
+  });
+
+
+  describe('Assets.hasMore', function() {
+    it('should have more assets by default', function() {
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets').respond(200, get_albums_abcqsrlx_assets);
+      var assets = Asset.query({album: 'abcqsrlx'});
+      $httpBackend.flush();
+      expect(assets.hasMore()).toBeTruthy();
+    });
+
+    it('should have more assets with string per_page', function() {
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets?per_page=5').respond(200, get_albums_abcqsrlx_assets);
+      var assets = Asset.query({album: 'abcqsrlx', perPage: '5'});
+      $httpBackend.flush();
+      expect(assets.hasMore()).toBeTruthy();
+    });
+
+    it('should NOT have more assets when requesting 10 per page', function() {
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets?per_page=10').respond(200, get_albums_abcqsrlx_assets);
+      var assets = Asset.query({album: 'abcqsrlx', perPage: 10});
+      $httpBackend.flush();
+      expect(assets.hasMore()).toBeFalsy();
+    });
+
+    it('should NOT have more assets when returning 0 assets', function() {
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets').respond(200, {});
+      var assets = Asset.query({album: 'abcqsrlx'});
+      $httpBackend.flush();
+      expect(assets.hasMore()).toBeFalsy();
+    });
   });
 
 

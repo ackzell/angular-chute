@@ -13,6 +13,8 @@ angular.module('chute').factory('Chute.API.Asset', ['$resource', '$http', 'apiUr
   });
 
 
+  var PER_PAGE = 5;
+
   var Assets = {
     /**
     * Fetch previous page of assets and prepend them to current instance of assets.
@@ -80,8 +82,22 @@ angular.module('chute').factory('Chute.API.Asset', ['$resource', '$http', 'apiUr
           // append new asssets to the original array
           assets.push.apply(assets, newAssets);
         }
+        if (!response || !response.data || response.data.length != (params.per_page || PER_PAGE)) {
+          assets._hasMore = false;
+        }
         (success||angular.noop)(newAssets, response.headers);
       }, error);
+    },
+
+    /**
+    * Check whether there are more assets available.
+    * This method doesn't trigger any external request. The resolution is based on the result of the last query (if it returned less than requested number of items, it's a signal there are no more available).
+    * @returns {boolean}
+    *   true if there are more assets on the server;
+    *   false if we have reached the end
+    */
+    hasMore: function() {
+      return !! this._hasMore;
     }
   };
 
@@ -117,6 +133,10 @@ angular.module('chute').factory('Chute.API.Asset', ['$resource', '$http', 'apiUr
           data.album = params.album;
           assets.push(new AssetResource(data));
         });
+
+        if (response.data.length == (params.per_page || PER_PAGE)) {
+          assets._hasMore = true;
+        }
       }
       (success||angular.noop)(assets, response.headers);
     }, error);
