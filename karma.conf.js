@@ -13,7 +13,6 @@ module.exports = function(config) {
       'app/bower_components/angular/angular.js',
       'app/bower_components/angular-mocks-unstable/angular-mocks.js',
 
-      'app/bower_components/lodash/lodash.js',
       'app/bower_components/jquery-bridget/jquery.bridget.js',
       'app/bower_components/get-style-property/get-style-property.js',
       'app/bower_components/get-size/get-size.js',
