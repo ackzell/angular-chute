@@ -8,16 +8,14 @@
 
   or
 
+- `npm install angular-chute`
+
+  or
+
 - Download [angular-chute.js](dist/angular.chute.js) or [angular-chute.min.js](dist/angular-chute.min.js)
 
 
-## API
-
-
-
-### Assets
-
-Assets is a collection of images or videos group together in an album.
+## Getting started
 
 To display images from an album inside a gallery:
 
@@ -30,13 +28,13 @@ To display images from an album inside a gallery:
     
     <p>{{asset.caption}}</p>
     
-    <ng-pluralize class="hearts" count="asset.hearts" when="{'one':'1 heart', 'other':'{} hearts'}"></ng-pluralize>
+    <div ng-pluralize class="hearts" count="asset.hearts" when="{'one':'1 heart', 'other':'{} hearts'}"></div>
   </div>
 </div>
 ```
 
 ```js
-angular.module('myApp').controller('MainCtrl', ['$scope', function($scope) {
+angular.module('myApp').controller('GalleryCtrl', ['$scope', function($scope) {
   $scope.assets = Asset.query({album: 'shortcut'});
 });
 ```
@@ -48,6 +46,11 @@ $scope.assets.nextPage();
 ```
 
 Thanks to Angular's data binding, the view will be updated automatically.
+
+
+## Documentation
+
+Available as [annotated source code](http://chute.github.io/angular-chute/docs/chute.html).
 
 
 ## License
