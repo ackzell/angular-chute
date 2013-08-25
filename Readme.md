@@ -1,3 +1,55 @@
 # angular-chute
 
-> Set of components to build displays in AngularJS on the [Chute](http://getchute.com) platform.
+> [Chute API](http://api.getchute.com/v2) wrapper for AngularJS.
+
+## Installation
+
+- `bower install angular-chute`
+
+  or
+
+- Download [angular-chute.js](dist/angular.chute.js) or [angular-chute.min.js](dist/angular-chute.min.js)
+
+
+## API
+
+
+
+### Assets
+
+Assets is a collection of images or videos group together in an album.
+
+To display images from an album inside a gallery:
+
+```html
+<div ng-app="myApp" class="gallery" ng-controller="GalleryCtrl">
+  <div class="gallery-item" ng-repeat="asset in assets">
+    <img ng-src="{{asset.url}}/w/300" alt="{{asset.caption}}" width="300">
+
+    <div class="heart" ng-class="{'active': asset.hearted()}" ng-click="asset.toggleHeart()"></div>
+    
+    <p>{{asset.caption}}</p>
+    
+    <ng-pluralize class="hearts" count="asset.hearts" when="{'one':'1 heart', 'other':'{} hearts'}"></ng-pluralize>
+  </div>
+</div>
+```
+
+```js
+angular.module('myApp').controller('MainCtrl', ['$scope', function($scope) {
+  $scope.assets = Asset.query({album: 'shortcut'});
+});
+```
+
+Now that you have a collection of assets, you can request next page as simply as:
+
+```js
+$scope.assets.nextPage();
+```
+
+Thanks to Angular's data binding, the view will be updated automatically.
+
+
+## License
+
+MIT License. Copyright (c) 2013 Chute Corporation.
