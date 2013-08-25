@@ -1,7 +1,5 @@
 .tmp
 .sass-cache
 *.log
-bower_components
 dist
-docs
 node_modules
