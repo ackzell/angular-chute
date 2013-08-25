@@ -9,30 +9,16 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'app/bower_components/jquery/jquery.js',
-      'app/bower_components/angular/angular.js',
-      'app/bower_components/angular-mocks-unstable/angular-mocks.js',
+      'bower_components/jquery/jquery.js',
+      'bower_components/angular/angular.js',
 
-      'app/bower_components/jquery-bridget/jquery.bridget.js',
-      'app/bower_components/get-style-property/get-style-property.js',
-      'app/bower_components/get-size/get-size.js',
-      'app/bower_components/eventEmitter/EventEmitter.js',
-      'app/bower_components/eventie/eventie.js',
-      'app/bower_components/doc-ready/doc-ready.js',
-      'app/bower_components/matches-selector/matches-selector.js',
-      'app/bower_components/outlayer/item.js',
-      'app/bower_components/outlayer/outlayer.js',
-      'app/bower_components/masonry/masonry.js',
-      'app/bower_components/imagesloaded/imagesloaded.js',
-      'app/bower_components/angular-resource-unstable/angular-resource.js',
-      'app/bower_components/angular-masonry/angular-masonry.js',
-      'app/bower_components/magnific-popup/dist/jquery.magnific-popup.js',
+      'bower_components/angular-mocks-unstable/angular-mocks.js',
+      'bower_components/angular-resource-unstable/angular-resource.js',
 
-      'app/chute/chute.js',
-      'app/chute/**/*.js',
-      'test/chute/**/*.js'
+      'src/chute.js',
+      'src/**/*.js',
+      'test/**/*.js'
     ],
-
 
     // list of files to exclude
     exclude: [],
@@ -40,7 +26,7 @@ module.exports = function(config) {
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit'
-    reporters: ['dots', 'osx'],
+    reporters: ['dots'],
 
 
     // web server port
