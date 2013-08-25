@@ -232,6 +232,7 @@ angular.module('chute').factory('Chute.API.Asset',
     return asset;
   };  
 
+  // <a name="heart"></a>
   // ## asset.heart
   //
   // Heart an asset.
@@ -268,9 +269,10 @@ angular.module('chute').factory('Chute.API.Asset',
 
     $http.post(apiUrl + '/albums/' + this.album + '/assets/' + this.shortcut + '/hearts')
     .success(function(response) {
-      window.localStorage[key] = response.data.identifier;
+      var heart = new Heart(response.data);
+      window.localStorage[key] = heart.identifier;
       self.hearts = (parseInt(self.hearts) || 0) + 1;
-      (options.success || angular.noop)(response.data);
+      (options.success || angular.noop)(heart);
     }).error(options.error || angular.noop);
   };
 
@@ -308,7 +310,7 @@ angular.module('chute').factory('Chute.API.Asset',
 
     var self = this;
 
-    new Heart({identifier: identifier}).remove({}, function(response) {
+    new Heart({identifier: identifier}).$remove({}, function(response) {
       delete window.localStorage[key];
       self.hearts = (parseInt(self.hearts) || 0) - 1;
       (options.success || angular.noop)(response.data);
