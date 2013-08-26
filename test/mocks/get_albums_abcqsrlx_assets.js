@@ -353,6 +353,13 @@ angular.module('chute').constant('get_albums_abcqsrlx_assets',
         "tags": [],
         "chute_asset_id": "736326673"
       }
-    ]
+    ],
+    "pagination":{
+      "current_page":1,
+      "next_page":"http://api.getchute.com/v2/albums/abcqsrlx/assets?page=2",
+      "previous_page":null,
+      "first_page":"http://api.getchute.com/v2/albums/abcqsrlx/assets",
+      "per_page":5
+    }
   }
 );

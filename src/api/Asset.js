@@ -4,9 +4,9 @@
 //
 // Asset represents metadata about an image or a video.
 angular.module('chute').factory('Chute.API.Asset',
-  ['$resource', '$http', 'apiUrl', 'Chute.API.Heart', function($resource, $http, apiUrl, Heart) {
+  ['Chute.API.Resource', '$http', 'apiUrl', 'Chute.API.Heart', function(Resource, $http, apiUrl, Heart) {
 
-  var AssetResource = $resource(apiUrl + '/albums/:album/assets/:collectionRoute:id/:memberRoute', {
+  var AssetResource = Resource(apiUrl + '/albums/:album/assets/:collectionRoute:id/:memberRoute', {
     album: '@album',
     id: '@id',
     collectionRoute: '@collectionRoute',
@@ -21,10 +21,10 @@ angular.module('chute').factory('Chute.API.Asset',
   var PER_PAGE = 5;
 
   // <a name="Assets"></a>
-  // ## Assets
+  // ## Assets Collection
   // 
-  // Collection of assets returned by `Asset.query`.
-  var Assets = {
+  // Collection of assets returned by [Asset.query](#query).
+  AssetResource.Collection = {
     // ### Assets.prevPage
     //
     // Fetch previous page of assets and prepend them to current instance of assets.
@@ -57,7 +57,7 @@ angular.module('chute').factory('Chute.API.Asset',
       
       var assets = this;
       AssetResource._query(params, function(response) {
-        var newAssets = angular.extend([], {params: angular.copy(assets.params)}, Assets);
+        var newAssets = angular.extend([], {params: angular.copy(assets.params)}, AssetResource.Collection);
         if (response && response.data) {
           angular.forEach(response.data, function(data) {
             data.album = params.album;
@@ -101,7 +101,7 @@ angular.module('chute').factory('Chute.API.Asset',
 
       var assets = this;
       AssetResource._query(params, function(response) {
-        var newAssets = angular.extend([], {params: angular.copy(assets.params)}, Assets);
+        var newAssets = angular.extend([], {params: angular.copy(assets.params)}, AssetResource.Collection);
         if (response && response.data) {
           angular.forEach(response.data, function(data) {
             data.album = params.album;
@@ -141,14 +141,15 @@ angular.module('chute').factory('Chute.API.Asset',
     }
   };
 
+  // <a name="query"></a>
   // ## Asset.query
   //
-  // Fetch album assets. Overwrites default `Resource.query` method, maintaining the same API.
+  // Fetch album assets. Overwrites default [Resource.query](Resource.html#query) method.
   // 
   // **@params**
   //
-  // - `params`
-  //   - `album` {string} - album shortcut like *abcqsrlx*
+  // - `params` {object}
+  //   - `album` or `album_id` or `album_shortcut` {string} - album shortcut like *abcqsrlx*
   //   - `perPage` {number} - assets to return per page
   //   - and more... see Chute API docs
   // - `success` {function}
@@ -166,46 +167,37 @@ angular.module('chute').factory('Chute.API.Asset',
   // ```js
   // $scope.assets = Asset.query({album: 'abcqsrlx'});
   // ```
-  AssetResource._query = AssetResource.query;
+  AssetResource.__query = AssetResource.query;
   AssetResource.query = function(params, success, error) {
-    if (params.perPage) {
-      params.per_page = params.perPage;
-      delete params.perPage;
+    if (params.album_id) {
+      params.album = params.album || params.album_id;
+      delete params.album_id;
+    }
+    if (params.album_shortcut) {
+      params.album = params.album || params.album_shortcut;
+      delete params.album_shortcut;
     }
 
-    var saveParams = angular.extend({page: 1}, params);
-    /* this is a nice trick to get array with helper functions */
-    var assets = angular.extend([], {params: saveParams}, Assets);
-
-    AssetResource._query(params, function(response) {
-      if (response && response.data) {
-        assets.length = 0;
-        angular.forEach(response.data, function(data) {
-          data.album = params.album;
-          assets.push(new AssetResource(data));
-        });
-
-        if (response.data.length == (params.per_page || PER_PAGE)) {
-          assets._hasMore = true;
-        }
-      }
-      (success||angular.noop)(assets, response.headers);
+    return AssetResource.__query(params, function(assets, responseHeaders) {
+      angular.forEach(assets, function(asset) {
+        asset.album = params.album;
+      });
+      (success||angular.noop)(assets, responseHeaders);
     }, error);
-
-    return assets;
   };
 
+  // <a name="get"></a>
   // ## Asset.get
   //
-  // Fetch asset from an album. Overwrites default `Resource.get` method, maintaining the same API.
+  // Fetch asset from an album. Extends [Resource.get](Resource.html#get) method.
   // 
   // See [AngularJS docs](http://docs.angularjs.org/api/ngResource.$resource) for more information.
   // 
   // **@params**
   //
-  // - `params`
-  //   - `album` {string} - album shortcut
-  //   - `asset` {string} - asset shortcut
+  // - `params` {object}
+  //   - `album` or `album_id` or `album_shortcut` {string} - album shortcut
+  //   - `id` or `shortcut` or `asset` {string} - asset shortcut
   // - `success` {function}
   // - `error` {function}
   //
@@ -215,23 +207,29 @@ angular.module('chute').factory('Chute.API.Asset',
   // ```js
   // var asset = Asset.get({album: 'abcqsrlx', asset: 'vjp3miwob'});
   // ```
-  AssetResource._get = AssetResource.get;
+  AssetResource.__get = AssetResource.get;
   AssetResource.get = function(params, success, error) {
-    success = (success || angular.noop);
-    error   = (error   || angular.noop);
+    if (params.album_id) {
+      params.album = params.album || params.album_id;
+      delete params.album_id;
+    }
+    if (params.album_shortcut) {
+      params.album = params.album || params.album_shortcut;
+      delete params.album_shortcut;
+    }
+    if (params.asset) {
+      params.id = params.id || params.asset;
+      delete params.asset;
+    }
+    if (params.shortcut) {
+      params.id = params.id || params.shortcut;
+      delete params.shortcut;
+    }
 
-    var data = {};
-
-    var asset = this instanceof AssetResource ? this : new AssetResource(data);
-
-    $http.get(apiUrl + '/albums/' + params.album + '/assets/' + params.id).success(function(response) {
-      angular.copy(response.data, asset);
-      success(response.data, response.headers);
-    }).error(error);
-
-    return asset;
+    return AssetResource.__get(params, success, error);
   };  
 
+  // <a name="heart"></a>
   // ## asset.heart
   //
   // Heart an asset.
@@ -268,9 +266,10 @@ angular.module('chute').factory('Chute.API.Asset',
 
     $http.post(apiUrl + '/albums/' + this.album + '/assets/' + this.shortcut + '/hearts')
     .success(function(response) {
-      window.localStorage[key] = response.data.identifier;
+      var heart = new Heart(response.data);
+      window.localStorage[key] = heart.identifier;
       self.hearts = (parseInt(self.hearts) || 0) + 1;
-      (options.success || angular.noop)(response.data);
+      (options.success || angular.noop)(heart);
     }).error(options.error || angular.noop);
   };
 
@@ -308,7 +307,7 @@ angular.module('chute').factory('Chute.API.Asset',
 
     var self = this;
 
-    new Heart({identifier: identifier}).remove({}, function(response) {
+    new Heart({identifier: identifier}).$remove({}, function(response) {
       delete window.localStorage[key];
       self.hearts = (parseInt(self.hearts) || 0) - 1;
       (options.success || angular.noop)(response.data);

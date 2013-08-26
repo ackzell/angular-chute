@@ -18,13 +18,26 @@ describe('Chute.API.Heart', function() {
     $httpBackend.verifyNoOutstandingRequest()
   });
 
+  describe('.remove', function() {
+
+    it('should delete heart', function() {
+      $httpBackend.expectDELETE(apiUrl + '/hearts/zhtuhmvggbhronuhklmp1377027594').respond(200, delete_hearts_zhtuhmvggbhronuhklmp1377027594);
+      var options = { success: function(){} };
+      var success = spyOn(options, 'success');
+      new Heart({identifier: 'zhtuhmvggbhronuhklmp1377027594'}).$remove({}, success);
+      $httpBackend.flush();
+      expect(success).toHaveBeenCalled();
+    });
+
+  });
+
   describe('.delete', function() {
 
     it('should delete heart', function() {
       $httpBackend.expectDELETE(apiUrl + '/hearts/zhtuhmvggbhronuhklmp1377027594').respond(200, delete_hearts_zhtuhmvggbhronuhklmp1377027594);
       var options = { success: function(){} };
       var success = spyOn(options, 'success');
-      new Heart({identifier: 'zhtuhmvggbhronuhklmp1377027594'}).remove({}, success);
+      new Heart({identifier: 'zhtuhmvggbhronuhklmp1377027594'}).$delete({}, success);
       $httpBackend.flush();
       expect(success).toHaveBeenCalled();
     });

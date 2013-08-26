@@ -1,12 +1,13 @@
 describe('Chute.API.Asset', function() {
 
-  var Asset, apiUrl, $httpBackend;
+  var Asset, Heart, apiUrl, $httpBackend;
   var get_album_abcqsrlx_assets, get_album_abcqsrlx_assets_vjp3miwob, post_albums_abcqsrlx_assets_vjp3miwob_hearts, delete_hearts_zhtuhmvggbhronuhklmp1377027594;
 
   beforeEach(function() {
     module('chute');
     inject(function($injector) {
       Asset = $injector.get('Chute.API.Asset');
+      Heart = $injector.get('Chute.API.Heart');
       apiUrl = $injector.get('apiUrl');
       get_albums_abcqsrlx_assets = $injector.get('get_albums_abcqsrlx_assets');
       get_albums_abcqsrlx_assets_vjp3miwob = $injector.get('get_albums_abcqsrlx_assets_vjp3miwob');
@@ -216,7 +217,15 @@ describe('Chute.API.Asset', function() {
       expect(assets.hasMore()).toBeTruthy();
     });
 
-    it('should NOT have more assets when requesting 10 per page', function() {
+    it('should NOT have more albums when pagination.next_page is null', function() {
+      var response = angular.extend(get_albums_abcqsrlx_assets, {pagination: {next_page: null}});
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets').respond(200, response);
+      var albums = Asset.query({album: 'abcqsrlx'});
+      $httpBackend.flush();
+      expect(albums.hasMore()).toBeFalsy();
+    });
+
+    it('should NOT have more assets when returned less than requested', function() {
       $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets?per_page=10').respond(200, get_albums_abcqsrlx_assets);
       var assets = Asset.query({album: 'abcqsrlx', perPage: 10});
       $httpBackend.flush();
@@ -260,6 +269,9 @@ describe('Chute.API.Asset', function() {
       
       expect(success).toHaveBeenCalled();
       expect(asset.hearts).toBe(1);
+      var heart = success.mostRecentCall.args[0];
+      expect(heart instanceof Heart).toBeTruthy();
+      expect(heart.identifier).toBe('zhtuhmvggbhronuhklmp1377027594');
       expect(window.localStorage['abcqsrlx-vjp3miwob-heart']).toBe('zhtuhmvggbhronuhklmp1377027594');
     });
 
@@ -325,6 +337,9 @@ describe('Chute.API.Asset', function() {
       
       expect(success).toHaveBeenCalled();
       expect(asset.hearts).toBe(1);
+      var heart = success.mostRecentCall.args[0];
+      expect(heart instanceof Heart).toBeTruthy();
+      expect(heart.identifier).toBe('zhtuhmvggbhronuhklmp1377027594');
       expect(window.localStorage['abcqsrlx-vjp3miwob-heart']).toBe('zhtuhmvggbhronuhklmp1377027594');
     });
 
