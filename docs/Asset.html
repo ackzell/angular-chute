@@ -19,6 +19,11 @@
           <div id="jump_page">
             
               
+              <a class="source" href="Album.html">
+                Album.js
+              </a>
+            
+              
               <a class="source" href="Asset.html">
                 Asset.js
               </a>
@@ -26,6 +31,11 @@
               
               <a class="source" href="Heart.html">
                 Heart.js
+              </a>
+            
+              
+              <a class="source" href="Resource.html">
+                Resource.js
               </a>
             
               
@@ -73,9 +83,9 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>angular.module(<span class="string">'chute'</span>).factory(<span class="string">'Chute.API.Asset'</span>,
-  [<span class="string">'$resource'</span>, <span class="string">'$http'</span>, <span class="string">'apiUrl'</span>, <span class="string">'Chute.API.Heart'</span>, <span class="keyword">function</span>($resource, $http, apiUrl, Heart) {
+  [<span class="string">'Chute.API.Resource'</span>, <span class="string">'$http'</span>, <span class="string">'apiUrl'</span>, <span class="string">'Chute.API.Heart'</span>, <span class="keyword">function</span>(Resource, $http, apiUrl, Heart) {
 
-  <span class="keyword">var</span> AssetResource = $resource(apiUrl + <span class="string">'/albums/:album/assets/:collectionRoute:id/:memberRoute'</span>, {
+  <span class="keyword">var</span> AssetResource = Resource(apiUrl + <span class="string">'/albums/:album/assets/:collectionRoute:id/:memberRoute'</span>, {
     album: <span class="string">'@album'</span>,
     id: <span class="string">'@id'</span>,
     collectionRoute: <span class="string">'@collectionRoute'</span>,
@@ -99,12 +109,12 @@
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
               <p><a name="Assets"></a></p>
-<h2>Assets</h2>
-<p>Collection of assets returned by <code>Asset.query</code>.</p>
+<h2>Assets Collection</h2>
+<p>Collection of assets returned by <a href="#query">Asset.query</a>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="keyword">var</span> Assets = {</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  AssetResource.Collection = {</pre></div></div>
             
         </li>
         
@@ -147,7 +157,7 @@ assets.prevPage();</code></pre>
       
       <span class="keyword">var</span> assets = <span class="keyword">this</span>;
       AssetResource._query(params, <span class="keyword">function</span>(response) {
-        <span class="keyword">var</span> newAssets = angular.extend([], {params: angular.copy(assets.params)}, Assets);
+        <span class="keyword">var</span> newAssets = angular.extend([], {params: angular.copy(assets.params)}, AssetResource.Collection);
         <span class="keyword">if</span> (response &amp;&amp; response.data) {
           angular.forEach(response.data, <span class="keyword">function</span>(data) {
             data.album = params.album;
@@ -200,7 +210,7 @@ assets.nextPage();</code></pre>
 
       <span class="keyword">var</span> assets = <span class="keyword">this</span>;
       AssetResource._query(params, <span class="keyword">function</span>(response) {
-        <span class="keyword">var</span> newAssets = angular.extend([], {params: angular.copy(assets.params)}, Assets);
+        <span class="keyword">var</span> newAssets = angular.extend([], {params: angular.copy(assets.params)}, AssetResource.Collection);
         <span class="keyword">if</span> (response &amp;&amp; response.data) {
           angular.forEach(response.data, <span class="keyword">function</span>(data) {
             data.album = params.album;
@@ -253,15 +263,16 @@ if (assets.hasMore()) {
         <li id="section-7">
             <div class="annotation">
               
-              <div class="pilwrap for-h2">
+              <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <h2>Asset.query</h2>
-<p>Fetch album assets. Overwrites default <code>Resource.query</code> method, maintaining the same API.</p>
+              <p><a name="query"></a></p>
+<h2>Asset.query</h2>
+<p>Fetch album assets. Overwrites default <a href="Resource.html#query">Resource.query</a> method.</p>
 <p><strong>@params</strong></p>
 <ul>
-<li><code>params</code><ul>
-<li><code>album</code> {string} - album shortcut like <em>abcqsrlx</em></li>
+<li><code>params</code> {object}<ul>
+<li><code>album</code> or <code>album_id</code> or <code>album_shortcut</code> {string} - album shortcut like <em>abcqsrlx</em></li>
 <li><code>perPage</code> {number} - assets to return per page</li>
 <li>and more... see Chute API docs</li>
 </ul>
@@ -281,33 +292,23 @@ if (assets.hasMore()) {
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  AssetResource._query = AssetResource.query;
+            <div class="content"><div class='highlight'><pre>  AssetResource.__query = AssetResource.query;
   AssetResource.query = <span class="keyword">function</span>(params, success, error) {
-    <span class="keyword">if</span> (params.perPage) {
-      params.per_page = params.perPage;
-      <span class="keyword">delete</span> params.perPage;
+    <span class="keyword">if</span> (params.album_id) {
+      params.album = params.album || params.album_id;
+      <span class="keyword">delete</span> params.album_id;
+    }
+    <span class="keyword">if</span> (params.album_shortcut) {
+      params.album = params.album || params.album_shortcut;
+      <span class="keyword">delete</span> params.album_shortcut;
     }
 
-    <span class="keyword">var</span> saveParams = angular.extend({page: <span class="number">1</span>}, params);
-    <span class="comment">/* this is a nice trick to get array with helper functions */</span>
-    <span class="keyword">var</span> assets = angular.extend([], {params: saveParams}, Assets);
-
-    AssetResource._query(params, <span class="keyword">function</span>(response) {
-      <span class="keyword">if</span> (response &amp;&amp; response.data) {
-        assets.length = <span class="number">0</span>;
-        angular.forEach(response.data, <span class="keyword">function</span>(data) {
-          data.album = params.album;
-          assets.push(<span class="keyword">new</span> AssetResource(data));
-        });
-
-        <span class="keyword">if</span> (response.data.length == (params.per_page || PER_PAGE)) {
-          assets._hasMore = <span class="literal">true</span>;
-        }
-      }
-      (success||angular.noop)(assets, response.headers);
+    <span class="keyword">return</span> AssetResource.__query(params, <span class="keyword">function</span>(assets, responseHeaders) {
+      angular.forEach(assets, <span class="keyword">function</span>(asset) {
+        asset.album = params.album;
+      });
+      (success||angular.noop)(assets, responseHeaders);
     }, error);
-
-    <span class="keyword">return</span> assets;
   };</pre></div></div>
             
         </li>
@@ -316,17 +317,18 @@ if (assets.hasMore()) {
         <li id="section-8">
             <div class="annotation">
               
-              <div class="pilwrap for-h2">
+              <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <h2>Asset.get</h2>
-<p>Fetch asset from an album. Overwrites default <code>Resource.get</code> method, maintaining the same API.</p>
+              <p><a name="get"></a></p>
+<h2>Asset.get</h2>
+<p>Fetch asset from an album. Extends <a href="Resource.html#get">Resource.get</a> method.</p>
 <p>See <a href="http://docs.angularjs.org/api/ngResource.$resource">AngularJS docs</a> for more information.</p>
 <p><strong>@params</strong></p>
 <ul>
-<li><code>params</code><ul>
-<li><code>album</code> {string} - album shortcut</li>
-<li><code>asset</code> {string} - asset shortcut</li>
+<li><code>params</code> {object}<ul>
+<li><code>album</code> or <code>album_id</code> or <code>album_shortcut</code> {string} - album shortcut</li>
+<li><code>id</code> or <code>shortcut</code> or <code>asset</code> {string} - asset shortcut</li>
 </ul>
 </li>
 <li><code>success</code> {function}</li>
@@ -338,21 +340,26 @@ if (assets.hasMore()) {
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  AssetResource._get = AssetResource.get;
+            <div class="content"><div class='highlight'><pre>  AssetResource.__get = AssetResource.get;
   AssetResource.get = <span class="keyword">function</span>(params, success, error) {
-    success = (success || angular.noop);
-    error   = (error   || angular.noop);
+    <span class="keyword">if</span> (params.album_id) {
+      params.album = params.album || params.album_id;
+      <span class="keyword">delete</span> params.album_id;
+    }
+    <span class="keyword">if</span> (params.album_shortcut) {
+      params.album = params.album || params.album_shortcut;
+      <span class="keyword">delete</span> params.album_shortcut;
+    }
+    <span class="keyword">if</span> (params.asset) {
+      params.id = params.id || params.asset;
+      <span class="keyword">delete</span> params.asset;
+    }
+    <span class="keyword">if</span> (params.shortcut) {
+      params.id = params.id || params.shortcut;
+      <span class="keyword">delete</span> params.shortcut;
+    }
 
-    <span class="keyword">var</span> data = {};
-
-    <span class="keyword">var</span> asset = <span class="keyword">this</span> <span class="keyword">instanceof</span> AssetResource ? <span class="keyword">this</span> : <span class="keyword">new</span> AssetResource(data);
-
-    $http.get(apiUrl + <span class="string">'/albums/'</span> + params.album + <span class="string">'/assets/'</span> + params.id).success(<span class="keyword">function</span>(response) {
-      angular.copy(response.data, asset);
-      success(response.data, response.headers);
-    }).error(error);
-
-    <span class="keyword">return</span> asset;
+    <span class="keyword">return</span> AssetResource.__get(params, success, error);
   };</pre></div></div>
             
         </li>
@@ -361,10 +368,11 @@ if (assets.hasMore()) {
         <li id="section-9">
             <div class="annotation">
               
-              <div class="pilwrap for-h2">
+              <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <h2>asset.heart</h2>
+              <p><a name="heart"></a></p>
+<h2>asset.heart</h2>
 <p>Heart an asset.</p>
 <p><strong>@params</strong></p>
 <ul>
@@ -398,9 +406,10 @@ if (assets.hasMore()) {
 
     $http.post(apiUrl + <span class="string">'/albums/'</span> + <span class="keyword">this</span>.album + <span class="string">'/assets/'</span> + <span class="keyword">this</span>.shortcut + <span class="string">'/hearts'</span>)
     .success(<span class="keyword">function</span>(response) {
-      window.localStorage[key] = response.data.identifier;
+      <span class="keyword">var</span> heart = <span class="keyword">new</span> Heart(response.data);
+      window.localStorage[key] = heart.identifier;
       self.hearts = (parseInt(self.hearts) || <span class="number">0</span>) + <span class="number">1</span>;
-      (options.success || angular.noop)(response.data);
+      (options.success || angular.noop)(heart);
     }).error(options.error || angular.noop);
   };</pre></div></div>
             
@@ -445,7 +454,7 @@ if (assets.hasMore()) {
 
     <span class="keyword">var</span> self = <span class="keyword">this</span>;
 
-    <span class="keyword">new</span> Heart({identifier: identifier}).remove({}, <span class="keyword">function</span>(response) {
+    <span class="keyword">new</span> Heart({identifier: identifier}).$remove({}, <span class="keyword">function</span>(response) {
       <span class="keyword">delete</span> window.localStorage[key];
       self.hearts = (parseInt(self.hearts) || <span class="number">0</span>) - <span class="number">1</span>;
       (options.success || angular.noop)(response.data);
