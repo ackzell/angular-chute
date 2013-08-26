@@ -217,7 +217,15 @@ describe('Chute.API.Asset', function() {
       expect(assets.hasMore()).toBeTruthy();
     });
 
-    it('should NOT have more assets when requesting 10 per page', function() {
+    it('should NOT have more albums when pagination.next_page is null', function() {
+      var response = angular.extend(get_albums_abcqsrlx_assets, {pagination: {next_page: null}});
+      $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets').respond(200, response);
+      var albums = Asset.query({album: 'abcqsrlx'});
+      $httpBackend.flush();
+      expect(albums.hasMore()).toBeFalsy();
+    });
+
+    it('should NOT have more assets when returned less than requested', function() {
       $httpBackend.expectGET(apiUrl + '/albums/abcqsrlx/assets?per_page=10').respond(200, get_albums_abcqsrlx_assets);
       var assets = Asset.query({album: 'abcqsrlx', perPage: 10});
       $httpBackend.flush();
