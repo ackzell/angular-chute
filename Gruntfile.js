@@ -29,13 +29,9 @@ module.exports = function (grunt) {
   grunt.initConfig({
     yeoman: yeomanConfig,
     watch: {
-      coffee: {
-        files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee'],
-        tasks: ['coffee:dist']
-      },
-      coffeeTest: {
-        files: ['test/spec/{,*/}*.coffee'],
-        tasks: ['coffee:test']
+      docco: {
+        files: ['<%= yeoman.app %>/src/**/*.js'],
+        tasks: ['docco']
       },
       livereload: {
         options: {
@@ -112,26 +108,6 @@ module.exports = function (grunt) {
         'Gruntfile.js',
         '<%= yeoman.app %>/scripts/{,*/}*.js'
       ]
-    },
-    coffee: {
-      dist: {
-        files: [{
-          expand: true,
-          cwd: '<%= yeoman.app %>/scripts',
-          src: '{,*/}*.coffee',
-          dest: '.tmp/scripts',
-          ext: '.js'
-        }]
-      },
-      test: {
-        files: [{
-          expand: true,
-          cwd: 'test/spec',
-          src: '{,*/}*.coffee',
-          dest: '.tmp/spec',
-          ext: '.js'
-        }]
-      }
     },
     // not used since Uglify task does concat,
     // but still available if needed
@@ -243,18 +219,16 @@ module.exports = function (grunt) {
       }
     },
     concurrent: {
-      server: [
-        'coffee:dist'
-      ],
-      test: [
-        'coffee'
-      ],
       dist: [
-        'coffee',
         'imagemin',
         'svgmin',
         'htmlmin'
       ]
+    },
+    docco: {
+      main: {
+        src: ['src/*.js', 'src/**/*.js']
+      }
     },
     karma: {
       unit: {
@@ -271,17 +245,17 @@ module.exports = function (grunt) {
       dist: {
         files: [{
           expand: true,
-          cwd: '<%= yeoman.dist %>/scripts',
+          cwd: '<%= yeoman.dist %>/src',
           src: '*.js',
-          dest: '<%= yeoman.dist %>/scripts'
+          dest: '<%= yeoman.dist %>/src'
         }]
       }
     },
     uglify: {
       dist: {
         files: {
-          '<%= yeoman.dist %>/scripts/scripts.js': [
-            '<%= yeoman.dist %>/scripts/scripts.js'
+          '<%= yeoman.dist %>/chute.js': [
+            '<%= yeoman.dist %>/chute.js'
           ]
         }
       }
@@ -295,7 +269,6 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
-      'concurrent:server',
       'connect:livereload',
       'open',
       'watch'
@@ -304,7 +277,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test', [
     'clean:server',
-    'concurrent:test',
     'connect:test',
     'karma'
   ]);
@@ -320,7 +292,8 @@ module.exports = function (grunt) {
     'cssmin',
     'uglify',
     'rev',
-    'usemin'
+    'usemin',
+    'docco'
   ]);
 
   grunt.registerTask('default', [
