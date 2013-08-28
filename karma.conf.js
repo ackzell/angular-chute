@@ -63,6 +63,12 @@ module.exports = function(config) {
     // If browser does not capture in given timeout [ms], kill it
     captureTimeout: 10000,
 
+    preprocessors: {
+      // source files, that you wanna generate coverage for
+      // do not include tests or libraries
+      // (these files will be instrumented by Istanbul)
+      'src/**/*.js': ['coverage']
+    },
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
@@ -71,6 +77,7 @@ module.exports = function(config) {
     plugins:[
       "karma-jasmine",
       "karma-chrome-launcher",
+      "karma-coverage",
       "karma-osx-reporter"
     ]
 
