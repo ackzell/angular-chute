@@ -12,7 +12,7 @@
 
   or
 
-- Download [angular-chute.js](dist/angular.chute.js) or [angular-chute.min.js](dist/angular-chute.min.js)
+- Download [angular-chute.js](dist/angular-chute.js) or [angular-chute.min.js](dist/angular-chute.min.js)
 
 
 ## Getting started

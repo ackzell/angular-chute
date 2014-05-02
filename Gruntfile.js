@@ -46,7 +46,7 @@ module.exports = function (grunt) {
     concat: {
       dist: {
         files: {
-          '<%= yeoman.dist %>/chute.js': [
+          '<%= yeoman.dist %>/angular-chute.js': [
             'src/chute.js',
             'src/api/*.js'
           ]
@@ -56,8 +56,8 @@ module.exports = function (grunt) {
     uglify: {
       dist: {
         files: {
-          '<%= yeoman.dist %>/chute.min.js': [
-            '<%= yeoman.dist %>/chute.js'
+          '<%= yeoman.dist %>/angular-chute.min.js': [
+            '<%= yeoman.dist %>/angular-chute.js'
           ]
         }
       }
