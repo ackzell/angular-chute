@@ -1,10 +1,10 @@
-'use strict';
-
 // # Chute.API.Resouce
 //
 // Abstract class that provides common behavior for Chute API resources and serializing data.
 angular.module('chute').factory('Chute.API.Resource',
-  ['$resource', '$http', function($resource, $http) {
+  ['$resource', function($resource) {
+
+  'use strict';
 
   var ResourceFactory = function(url, paramDefaults, actions) {
     url = url || '';
@@ -92,7 +92,7 @@ angular.module('chute').factory('Chute.API.Resource',
             /* append new asssets to the original array */
             collection.push.apply(collection, newCollection);
           }
-          if (!response || !response.data || response.data.length != (params.per_page || PER_PAGE)) {
+          if (!response || !response.data || response.data.length !== (params.per_page || PER_PAGE)) {
             collection._hasMore = false;
           }
           (success||angular.noop)(newCollection, response.headers);
@@ -211,7 +211,7 @@ angular.module('chute').factory('Chute.API.Resource',
       }, error);
 
       return resource;
-    };  
+    };
 
     return Resource;
   };

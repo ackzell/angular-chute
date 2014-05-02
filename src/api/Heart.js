@@ -1,10 +1,10 @@
-'use strict';
-
 // # Chute.API.Heart
 //
 // Heart represents a user's like on an asset. Unlike votes, users can heart multiple assets from the same album.
 angular.module('chute').factory('Chute.API.Heart',
   ['$resource', '$http', 'apiUrl', function($resource, $http, apiUrl) {
+
+  'use strict';
 
   var HeartResource = $resource(apiUrl + '/hearts/:collectionRoute:id/:memberRoute', {
     id: '@id',

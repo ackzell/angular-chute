@@ -1,6 +1,6 @@
-# angular-chute
+# angular-chute  [![Build Status](https://travis-ci.org/chute/angular-chute.svg?branch=master)](https://travis-ci.org/chute/angular-chute)
 
-> [Chute API](http://api.getchute.com/v2) wrapper for AngularJS.
+> [Chute API](http://docs.chute.apiary.io) wrapper for AngularJS.
 
 ## Installation
 
@@ -36,7 +36,7 @@ To display images from an album inside a gallery:
 ```js
 angular.module('myApp').controller('GalleryCtrl', ['$scope', function($scope) {
   $scope.assets = Asset.query({album: 'shortcut'});
-});
+}]);
 ```
 
 Now that you have a collection of assets, you can request next page as simply as:
@@ -51,6 +51,11 @@ Thanks to Angular's data binding, the view will be updated automatically.
 ## Documentation
 
 Available as [annotated source code](http://chute.github.io/angular-chute/docs/chute.html).
+
+
+## Testing
+
+`npm test`
 
 
 ## License

@@ -1,12 +1,12 @@
-'use strict';
-
 // # Chute.API.Asset
 //
 // Asset represents metadata about an image or a video.
 angular.module('chute').factory('Chute.API.Asset',
   ['Chute.API.Resource', '$http', 'apiUrl', 'Chute.API.Heart', function(Resource, $http, apiUrl, Heart) {
 
-  var AssetResource = Resource(apiUrl + '/albums/:album/assets/:collectionRoute:id/:memberRoute', {
+  'use strict';
+
+  var AssetResource = new Resource(apiUrl + '/albums/:album/assets/:collectionRoute:id/:memberRoute', {
     album: '@album',
     id: '@id',
     collectionRoute: '@collectionRoute',
@@ -111,7 +111,7 @@ angular.module('chute').factory('Chute.API.Asset',
           /* append new asssets to the original array */
           assets.push.apply(assets, newAssets);
         }
-        if (!response || !response.data || response.data.length != (params.per_page || PER_PAGE)) {
+        if (!response || !response.data || response.data.length !== (params.per_page || PER_PAGE)) {
           assets._hasMore = false;
         }
         (success||angular.noop)(newAssets, response.headers);
@@ -227,7 +227,7 @@ angular.module('chute').factory('Chute.API.Asset',
     }
 
     return AssetResource.__get(params, success, error);
-  };  
+  };
 
   // <a name="heart"></a>
   // ## asset.heart
@@ -268,7 +268,7 @@ angular.module('chute').factory('Chute.API.Asset',
     .success(function(response) {
       var heart = new Heart(response.data);
       window.localStorage[key] = heart.identifier;
-      self.hearts = (parseInt(self.hearts) || 0) + 1;
+      self.hearts = (parseInt(self.hearts, 10) || 0) + 1;
       (options.success || angular.noop)(heart);
     }).error(options.error || angular.noop);
   };
@@ -309,7 +309,7 @@ angular.module('chute').factory('Chute.API.Asset',
 
     new Heart({identifier: identifier}).$remove({}, function(response) {
       delete window.localStorage[key];
-      self.hearts = (parseInt(self.hearts) || 0) - 1;
+      self.hearts = (parseInt(self.hearts, 10) || 0) - 1;
       (options.success || angular.noop)(response.data);
     }, options.error || angular.noop);
   };
@@ -327,7 +327,7 @@ angular.module('chute').factory('Chute.API.Asset',
   // ```
   AssetResource.prototype.hearted = function() {
     return !!window.localStorage[this.album + '-' + this.shortcut + '-heart'];
-  }
+  };
 
   // ## Asset.toggleHeart
   //
@@ -357,7 +357,7 @@ angular.module('chute').factory('Chute.API.Asset',
     } else {
       this.heart(options);
     }
-  }
+  };
 
   return AssetResource;
 }]);

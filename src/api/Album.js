@@ -1,12 +1,12 @@
-'use strict';
-
 // # Chute.API.Album
 //
 // Album represents a folder with image and/or video albums.
 angular.module('chute').factory('Chute.API.Album',
-  ['Chute.API.Resource', '$http', 'apiUrl', 'Chute.API.Asset', function(Resource, $http, apiUrl, Asset) {
+  ['Chute.API.Resource', '$http', 'apiUrl', function(Resource, $http, apiUrl) {
 
-  var AlbumResource = Resource(apiUrl + '/albums/:collectionRoute:id:shortcut/:memberRoute', {
+  'use strict';
+
+  var AlbumResource = new Resource(apiUrl + '/albums/:collectionRoute:id:shortcut/:memberRoute', {
     id: '@id',
     shortcut: '@shortcut',
     collectionRoute: '@collectionRoute',
@@ -67,7 +67,7 @@ angular.module('chute').factory('Chute.API.Album',
   AlbumResource.__get = AlbumResource.get;
   AlbumResource.get = function(params, success, error) {
     return AlbumResource.__get(params, success, error);
-  };  
+  };
 
   return AlbumResource;
 }]);

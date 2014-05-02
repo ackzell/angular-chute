@@ -3,6 +3,5 @@
 *.log
 bower_components
 coverage
-dist
 docs
 node_modules
