@@ -72,14 +72,6 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun: false,
-
-    plugins:[
-      "karma-jasmine",
-      "karma-chrome-launcher",
-      "karma-coverage",
-      "karma-osx-reporter"
-    ]
-
+    singleRun: false
   })
 }
