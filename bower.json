@@ -4,6 +4,9 @@
   "description": "Chute SDK for AngularJS",
   "dependencies": {
   },
+  "main": [
+    "./angular-chute/dist/angular-chute.min.js"
+  ],
   "devDependencies": {
     "angular-unstable": "~1.1.5",
     "json3": "~3.2.4",
